@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 
 def get_full_history(hist_dir, verbose=False):
     jsons = list(hist_dir.glob("history*.json"))
@@ -59,3 +60,31 @@ def count_skipped_configurations(exp_dir):
         print("Number of skipped configurations: {}".format(count // 2))
     else:
         print("Could not find {}".format(str(skiplog_file_path)))
+
+
+def ckpt2loss(ckpt_path):
+    return float(re.search(r"\d+-\d+.\d+", str(ckpt_path.name))[0].split("-")[-1])
+
+
+def ckpt2epoch(ckpt_path):
+    return int(re.search(r"\d+-\d+.\d+", str(ckpt_path.name))[0].split("-")[0])
+
+
+def get_sorted_ckpts(train_dir):
+    checkpoint_list = list(Path(Path(train_dir) / "weights").glob("weights*.hdf5"))
+    # Sort the checkpoints according to the loss in their filenames
+    checkpoint_list.sort(key=lambda x: ckpt2loss(x))
+    return checkpoint_list
+
+
+def get_best_checkpoint(train_dir):
+    return get_sorted_ckpts(train_dir)[0]
+
+
+def get_best_epoch(train_dir):
+    return ckpt2epoch(get_best_checkpoint(train_dir))
+
+
+def get_best_loss(train_dir):
+    return ckpt2loss(get_best_checkpoint(train_dir))
+
