@@ -1,5 +1,6 @@
 from pathlib import Path
 import re
+import matplotlib.pyplot as plt
 
 def get_full_history(hist_dir, verbose=False):
     jsons = list(hist_dir.glob("history*.json"))
@@ -88,3 +89,22 @@ def get_best_epoch(train_dir):
 def get_best_loss(train_dir):
     return ckpt2loss(get_best_checkpoint(train_dir))
 
+
+def showJetMet(train_dir, save_dir=None):
+    best_epoch = get_best_epoch(train_dir)
+    image_list = list(Path(f"{train_dir}/history/epoch_{best_epoch}").glob("*.png"))
+    image_list.sort()
+
+    fig = plt.figure(figsize=(12,12))
+    for i in range(4):
+        a=fig.add_subplot(2, 2, i+1)
+        image = plt.imread(image_list[i])
+        plt.imshow(image,cmap='Greys_r')
+        plt.axis('off')
+        plt.tight_layout()
+    print("Image files:")
+    for file in image_list:
+        print(file)
+
+    if save_dir:
+        plt.savefig(save_dir + "/jet_met_plots.pdf")
