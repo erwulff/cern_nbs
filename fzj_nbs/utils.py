@@ -1,11 +1,23 @@
 from pathlib import Path
 import re
 import matplotlib.pyplot as plt
+import json
+import numpy as np
+
+
+def get_combined_array(histories, key):
+    combined_array = np.array(histories[0][key])
+    for ii in range(1, len(histories)):
+        combined_array = np.vstack([combined_array, np.array(histories[ii][key])])
+    return combined_array
+
 
 def get_full_history(hist_dir, verbose=False):
     jsons = list(hist_dir.glob("history*.json"))
     if verbose:
         print(f"{hist_dir.parent} has {len(jsons)} hisotries")
+    if len(jsons) == 0:
+        return {}, 0
     jsons.sort(key=lambda x: int(x.name.split("_")[1].split(".")[0]))  # sort according to epoch number
 
     # initialize a dict with correct keys and empty lists as values
@@ -41,8 +53,9 @@ def get_histories(train_dirs):
     histories = []
 
     for train_dir in train_dirs:
-        hist, N = get_full_history(hist_dir=train_dir / "history")
-        histories.append(hist)
+        hist, N = get_full_history(hist_dir=train_dir / "logs/history")
+        if N > 0:
+            histories.append(hist)
 
     return histories
 
@@ -107,4 +120,7 @@ def showJetMet(train_dir, save_dir=None):
         print(file)
 
     if save_dir:
-        plt.savefig(save_dir + "/jet_met_plots.pdf")
+        if (Path(save_dir).suffix == ".png") or (Path(save_dir).suffix == ".jpg") or (Path(save_dir).suffix == ".pdf") or (Path(save_dir).suffix == ".jpeg"):
+            plt.savefig(save_dir)
+        else:
+            plt.savefig(save_dir + "/jet_met_plots.pdf")

@@ -43,7 +43,7 @@ ytick.direction: in
 #ytick.minor.size:    7
 
 # Grids
-grid.linestyle   :   :
+grid.linestyle   :   -
 grid.linewidth   :   0.8
 grid.alpha       :   0.3
 
