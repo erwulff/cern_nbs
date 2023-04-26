@@ -9,9 +9,9 @@ which python3
 python3 --version
 
 # GPU node
-# srun -t 0-01:00:00 -N 1 -p gpu --constraint=a100 --gpus-per-task=4 --tasks-per-node=1 --exclusive --pty \
+# srun -t 0-12:00:00 -N 1 -p gpu --constraint=a100 --gpus-per-task=4 --tasks-per-node=1 --exclusive --pty \
 #     jupyter lab --no-browser --ip=0.0.0.0
 
 # CPU node
-srun -t 0-01:00:00 -N 1 -p genx --tasks-per-node=1 --exclusive --pty \
+srun -t 0-12:00:00 -N 1 -p genx --tasks-per-node=1 --cpus-per-task=32 --mem-per-cpu 1G --pty \
     jupyter lab --no-browser --ip=0.0.0.0
