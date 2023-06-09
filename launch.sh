@@ -14,4 +14,4 @@ python3 --version
 
 # CPU node
 srun -t 0-12:00:00 -N 1 -p genx --tasks-per-node=1 --cpus-per-task=32 --mem-per-cpu 1G --pty \
-    jupyter lab --no-browser --ip=0.0.0.0
+    jupyter lab --no-browser --ip=0.0.0.0 --NotebookApp.allow_origin='*'
